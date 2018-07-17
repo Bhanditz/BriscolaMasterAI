@@ -9,10 +9,10 @@ import java.util.Random;
 /**
  * @author Gianlu
  */
-public class AiPlayer extends BasePlayer {
+public class PseudoAiPlayer extends BasePlayer {
     private final Random random = new Random(System.nanoTime());
 
-    public AiPlayer(String name) {
+    public PseudoAiPlayer(String name) {
         super(name);
     }
 
@@ -25,7 +25,19 @@ public class AiPlayer extends BasePlayer {
     @Override
     public @NotNull Card selectCardToPlay(@NotNull Game game) {
         if (game.table[0] == null) {
-            return RandomPlayer.randomCard(random, hand); // FIXME: That's the weak point
+            int lessHarmfulWeight = Integer.MAX_VALUE;
+            Card lessHarmful = null;
+            for (Card card : hand) {
+                if (card == null) continue;
+                int possibleHarmfulWeight = (card.points + card.value) + (game.trump.suit == card.suit ? 8 : 0);
+                if (possibleHarmfulWeight < lessHarmfulWeight) {
+                    lessHarmfulWeight = possibleHarmfulWeight;
+                    lessHarmful = card;
+                }
+            }
+
+            if (lessHarmful != null) return lessHarmful;
+            else return RandomPlayer.randomCard(random, hand);
         } else {
             int bestPlayWeight = Integer.MIN_VALUE;
             Card bestPlay = null;

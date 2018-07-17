@@ -2,9 +2,9 @@ package com.gianlu.briscolamasterai;
 
 import com.gianlu.briscolamasterai.Game.Card;
 import com.gianlu.briscolamasterai.Game.Game;
-import com.gianlu.briscolamasterai.Players.AiPlayer;
 import com.gianlu.briscolamasterai.Players.BasePlayer;
 import com.gianlu.briscolamasterai.Players.ConsolePlayer;
+import com.gianlu.briscolamasterai.Players.PseudoAiPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +17,7 @@ public class Main implements Game.Listener {
     private final Game game;
 
     public Main() {
-        game = new Game(new ConsolePlayer("Console one"), new AiPlayer("AI two"), this);
+        game = new Game(new ConsolePlayer("Console one"), new PseudoAiPlayer("AI two"), this);
         game.start();
     }
 

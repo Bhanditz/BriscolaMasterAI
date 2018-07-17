@@ -2,8 +2,8 @@ package com.gianlu.briscolamasterai;
 
 import com.gianlu.briscolamasterai.Game.Card;
 import com.gianlu.briscolamasterai.Game.Game;
-import com.gianlu.briscolamasterai.Players.AiPlayer;
 import com.gianlu.briscolamasterai.Players.BasePlayer;
+import com.gianlu.briscolamasterai.Players.PseudoAiPlayer;
 import com.gianlu.briscolamasterai.Players.RandomPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ public class Benchmark implements Game.Listener {
         result = new HashMap<>(2);
 
         for (int i = 0; i < num; i++) {
-            Game game = new Game(new RandomPlayer("Random one"), new AiPlayer("AI two"), this);
+            Game game = new Game(new RandomPlayer("Random one"), new PseudoAiPlayer("AI two"), this);
             game.start();
         }
 

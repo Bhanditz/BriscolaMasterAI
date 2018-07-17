@@ -1,6 +1,7 @@
 package com.gianlu.briscolamasterai.Players;
 
-import com.gianlu.briscolamasterai.Card;
+import com.gianlu.briscolamasterai.Game.Card;
+import com.gianlu.briscolamasterai.Game.Game;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -16,8 +17,7 @@ public class RandomPlayer extends BasePlayer {
     }
 
     @NotNull
-    @Override
-    public Card selectCardToPlay() {
+    public static Card randomCard(@NotNull Random random, Card[] hand) {
         int availableIndexesSize = 0;
         int[] availableIndexes = new int[3];
         for (int i = 0; i < hand.length; i++) {
@@ -27,7 +27,14 @@ public class RandomPlayer extends BasePlayer {
             }
         }
 
-        Card card = hand[availableIndexes[random.nextInt(availableIndexesSize)]];
+        if (availableIndexesSize == 0) throw new IllegalArgumentException("Hand is empty!!");
+        return hand[availableIndexes[random.nextInt(availableIndexesSize)]];
+    }
+
+    @NotNull
+    @Override
+    public Card selectCardToPlay(@NotNull Game game) {
+        Card card = randomCard(random, hand);
         System.out.println("Played " + card);
         return card;
     }

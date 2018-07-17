@@ -1,4 +1,4 @@
-package com.gianlu.briscolamasterai;
+package com.gianlu.briscolamasterai.Game;
 
 import org.jetbrains.annotations.NotNull;
 

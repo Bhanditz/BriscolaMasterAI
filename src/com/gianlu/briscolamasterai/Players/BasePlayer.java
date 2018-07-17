@@ -1,6 +1,7 @@
 package com.gianlu.briscolamasterai.Players;
 
-import com.gianlu.briscolamasterai.Card;
+import com.gianlu.briscolamasterai.Game.Card;
+import com.gianlu.briscolamasterai.Game.Game;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public abstract class BasePlayer {
     }
 
     @NotNull
-    public abstract Card selectCardToPlay();
+    public abstract Card selectCardToPlay(@NotNull Game game);
 
     @Override
     public String toString() {

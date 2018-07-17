@@ -1,6 +1,7 @@
-package com.gianlu.briscolamasterai;
+package com.gianlu.briscolamasterai.Game;
 
 import com.gianlu.briscolamasterai.Players.BasePlayer;
+import com.gianlu.briscolamasterai.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +29,28 @@ public class Game {
         handDeal(playerOne);
         handDeal(playerTwo);
         trump = deck.poll();
+        if (trump == null) throw new IllegalStateException("What the hell?!");
         deck.addLast(trump);
+    }
+
+    public static int evaluateTable(@NotNull Card trump, @NotNull Card[] table) {
+        Card leading = table[0];
+        for (int i = 1; i < table.length; i++) {
+            Card current = table[i];
+            if (current.suit == trump.suit) {
+                if (leading.suit == trump.suit) {
+                    if (current.value > leading.value)
+                        leading = current;
+                } else {
+                    leading = current;
+                }
+            } else if (current.suit == leading.suit) {
+                if (current.value > leading.value)
+                    leading = current;
+            }
+        }
+
+        return Utils.indexOf(table, leading);
     }
 
     public void start() {
@@ -49,7 +71,7 @@ public class Game {
     private void changeTurnTo(@NotNull BasePlayer player) {
         turnOf = player;
         listener.turnOf(player);
-        playCard(turnOf, turnOf.selectCardToPlay());
+        playCard(turnOf, turnOf.selectCardToPlay(this));
     }
 
     private void checkEveryonePlayed() {
@@ -76,23 +98,7 @@ public class Game {
 
     @NotNull
     private BasePlayer evaluateTable() {
-        Card leading = table[0];
-        for (int i = 1; i < table.length; i++) {
-            Card current = table[i];
-            if (current.suit == trump.suit) {
-                if (leading.suit == trump.suit) {
-                    if (current.value > leading.value)
-                        leading = current;
-                } else {
-                    leading = current;
-                }
-            } else if (current.suit == leading.suit) {
-                if (current.value > leading.value)
-                    leading = current;
-            }
-        }
-
-        return tablePlayedBy[Utils.indexOf(table, leading)];
+        return tablePlayedBy[evaluateTable(trump, table)];
     }
 
     public void handDeal(@NotNull BasePlayer player) {

@@ -1,6 +1,7 @@
 package com.gianlu.briscolamasterai.Players;
 
-import com.gianlu.briscolamasterai.Card;
+import com.gianlu.briscolamasterai.Game.Card;
+import com.gianlu.briscolamasterai.Game.Game;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Scanner;
@@ -17,7 +18,7 @@ public class ConsolePlayer extends BasePlayer {
 
     @Override
     @NotNull
-    public Card selectCardToPlay() {
+    public Card selectCardToPlay(@NotNull Game game) {
         System.out.print("Select a card to play: ");
         if (scanner.hasNextLine()) {
             int index = Integer.parseInt(scanner.nextLine());

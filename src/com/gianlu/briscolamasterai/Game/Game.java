@@ -17,7 +17,7 @@ public class Game {
     private final BasePlayer playerTwo;
     private final Deck deck;
     private final Listener listener;
-    private BasePlayer turnOf;
+    private Player turnOf;
 
     public Game(@NotNull BasePlayer playerOne, @NotNull BasePlayer playerTwo, @NotNull Listener listener) {
         this.playerOne = playerOne;
@@ -27,36 +27,44 @@ public class Game {
         info = new PublicInfo(deck.poll());
         deck.addLast(info.trump);
 
-        handDeal(playerOne);
-        handDeal(playerTwo);
+        handDeal(Player.ONE);
+        handDeal(Player.TWO);
+    }
+
+    @NotNull
+    private static Player opposite(@NotNull Player player) {
+        return player == Player.ONE ? Player.TWO : Player.ONE;
     }
 
     public void start() {
-        listener.gameStarted(info.trump);
-        changeTurnTo(playerOne);
+        changeTurnTo(Player.ONE);
     }
 
-    private void playCard(@NotNull BasePlayer player, @NotNull Card card) {
+    @NotNull
+    private BasePlayer getPlayer(@NotNull Player player) {
+        return player == Player.ONE ? playerOne : playerTwo;
+    }
+
+    private void playCard(@NotNull Player player, @NotNull Card card) {
         if (turnOf == null) throw new IllegalStateException("Game not started or ended!");
         if (turnOf != player) throw new IllegalStateException("Not your turn!");
-        if (!Utils.contains(player.hand, card)) throw new IllegalArgumentException(player + " doesn't have that card!");
+        if (!Utils.contains(getPlayer(player).hand, card))
+            throw new IllegalArgumentException(player + " doesn't have that card!");
         Utils.push(info.table, card);
         Utils.push(info.tablePlayedBy, player);
-        Utils.remove(player.hand, card);
+        Utils.remove(getPlayer(player).hand, card);
         checkEveryonePlayed();
     }
 
-    private void changeTurnTo(@NotNull BasePlayer player) {
-        turnOf = player;
-        listener.turnOf(player);
-        playCard(turnOf, turnOf.selectCardToPlay(info));
+    private void changeTurnTo(@NotNull Game.Player set) {
+        turnOf = set;
+        playCard(turnOf, getPlayer(turnOf).selectCardToPlay(info));
     }
 
     private void checkEveryonePlayed() {
         if (Utils.countNotNull(info.table) == info.table.length) {
-            BasePlayer winner = evaluateTable();
-            listener.playerWonRound(winner);
-            Utils.dumpArrayIntoList(info.table, winner.cardsWon);
+            Player winner = evaluateTable();
+            Utils.dumpArrayIntoList(info.table, getPlayer(winner).cardsWon);
             Utils.clear(info.tablePlayedBy);
 
             if (deck.isEmpty() && Utils.isEmpty(playerOne.hand) && Utils.isEmpty(playerTwo.hand)) {
@@ -64,25 +72,24 @@ public class Game {
                 evaluateGame();
             } else {
                 handDeal(winner);
-                handDeal(winner == playerOne ? playerTwo : playerOne);
+                handDeal(opposite(winner));
                 changeTurnTo(winner);
             }
         } else {
-            if (turnOf == playerOne) changeTurnTo(playerTwo);
-            else if (turnOf == playerTwo) changeTurnTo(playerOne);
-            else throw new IllegalStateException("Where did this guy come from?! " + turnOf);
+            changeTurnTo(opposite(turnOf));
         }
     }
 
     @NotNull
-    private BasePlayer evaluateTable() {
+    private Game.Player evaluateTable() {
         return info.tablePlayedBy[GameUtils.evaluateTable(info.trump, info.table)];
     }
 
-    private void handDeal(@NotNull BasePlayer player) {
-        for (int i = 0; i < player.hand.length; i++) {
-            Card card = player.hand[i];
-            if (card == null) player.hand[i] = deck.poll();
+    private void handDeal(@NotNull Player player) {
+        BasePlayer realPlayer = getPlayer(player);
+        for (int i = 0; i < realPlayer.hand.length; i++) {
+            Card card = realPlayer.hand[i];
+            if (card == null) realPlayer.hand[i] = deck.poll();
         }
     }
 
@@ -90,30 +97,35 @@ public class Game {
         int onePoints = playerOne.getPoints();
         int twoPoints = playerTwo.getPoints();
         if (onePoints == twoPoints) listener.gameEnded(null, onePoints, twoPoints);
-        else if (onePoints > twoPoints) listener.gameEnded(playerOne, onePoints, twoPoints);
-        else listener.gameEnded(playerTwo, twoPoints, onePoints);
+        else if (onePoints > twoPoints) listener.gameEnded(Player.ONE, onePoints, twoPoints);
+        else listener.gameEnded(Player.TWO, twoPoints, onePoints);
+    }
+
+    public enum Player {
+        ONE,
+        TWO
     }
 
     public interface Listener {
         void gameStarted(@NotNull Card trump);
 
-        void turnOf(@NotNull BasePlayer player);
+        void turnOf(@NotNull Player player);
 
-        void playerWonRound(@NotNull BasePlayer player);
+        void playerWonRound(@NotNull Player player);
 
-        void gameEnded(@Nullable BasePlayer winner, int winnerPoints, int otherPoints);
+        void gameEnded(@Nullable Player winner, int winnerPoints, int otherPoints);
     }
 
     public class PublicInfo {
         public final Card trump;
         public final Card[] table;
-        public final BasePlayer[] tablePlayedBy;
+        public final Player[] tablePlayedBy;
 
         private PublicInfo(Card trump) {
             if (trump == null) throw new IllegalStateException("What the hell?!");
 
             this.table = new Card[2];
-            this.tablePlayedBy = new BasePlayer[2];
+            this.tablePlayedBy = new Player[2];
             this.trump = trump;
         }
 

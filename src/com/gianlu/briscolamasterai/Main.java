@@ -3,8 +3,7 @@ package com.gianlu.briscolamasterai;
 import com.gianlu.briscolamasterai.Game.Card;
 import com.gianlu.briscolamasterai.Game.Game;
 import com.gianlu.briscolamasterai.Players.AiPlayer;
-import com.gianlu.briscolamasterai.Players.BasePlayer;
-import com.gianlu.briscolamasterai.Players.ConsolePlayer;
+import com.gianlu.briscolamasterai.Players.RandomPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +16,7 @@ public class Main implements Game.Listener {
     private final Game game;
 
     private Main() {
-        game = new Game(new ConsolePlayer("Console one"), new AiPlayer("AI two"), this);
+        game = new Game(new RandomPlayer("Random one"), new AiPlayer("AI two"), this);
         game.start();
     }
 
@@ -33,21 +32,21 @@ public class Main implements Game.Listener {
     }
 
     @Override
-    public void turnOf(@NotNull BasePlayer player) {
+    public void turnOf(@NotNull Game.Player player) {
         System.out.println("---------------------------");
         System.out.println("Turn of " + player);
         System.out.println("Current table is: " + Arrays.toString(game.info.table));
     }
 
     @Override
-    public void playerWonRound(@NotNull BasePlayer player) {
+    public void playerWonRound(@NotNull Game.Player player) {
         System.out.println("---------------------------");
         System.out.println("Round table: " + Arrays.toString(game.info.table));
         System.out.println("ROUND WINNER: " + player);
     }
 
     @Override
-    public void gameEnded(@Nullable BasePlayer winner, int winnerPoints, int otherPoints) {
+    public void gameEnded(@Nullable Game.Player winner, int winnerPoints, int otherPoints) {
         System.out.println("---------------------------");
         System.out.println("GAME ENDED!!");
         System.out.println("WINNER: " + winner);

@@ -33,7 +33,7 @@ public class RandomPlayer extends BasePlayer {
 
     @NotNull
     @Override
-    public Card selectCardToPlay(@NotNull Game game) {
+    public Card selectCardToPlay(@NotNull Game.PublicInfo info) {
         Card card = randomCard(random, hand);
         System.out.println("Played " + card);
         return card;

@@ -21,11 +21,23 @@ public class Card {
         this.suit = suit;
     }
 
+    public Card(int value, int points, Suit suit, String name) {
+        this.value = value;
+        this.points = points;
+        this.suit = suit;
+        this.name = name;
+    }
+
     @NotNull
     public static List<Card> getOneSuit(@NotNull Suit suit) {
         List<Card> cards = new ArrayList<>();
         for (Mapped mapped : Mapped.values()) cards.add(new Card(mapped, suit));
         return cards;
+    }
+
+    @NotNull
+    public Card getClone() {
+        return new Card(value, points, suit, name);
     }
 
     @NotNull

@@ -29,7 +29,7 @@ public abstract class BasePlayer {
     }
 
     @NotNull
-    public abstract Card selectCardToPlay(@NotNull Game game);
+    public abstract Card selectCardToPlay(@NotNull Game.PublicInfo info);
 
     @Override
     public String toString() {

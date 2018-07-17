@@ -18,7 +18,7 @@ public class ConsolePlayer extends BasePlayer {
 
     @Override
     @NotNull
-    public Card selectCardToPlay(@NotNull Game game) {
+    public Card selectCardToPlay(@NotNull Game.PublicInfo info) {
         System.out.print("Select a card to play: ");
         if (scanner.hasNextLine()) {
             int index = Integer.parseInt(scanner.nextLine());

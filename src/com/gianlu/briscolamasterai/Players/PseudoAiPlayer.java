@@ -2,7 +2,9 @@ package com.gianlu.briscolamasterai.Players;
 
 import com.gianlu.briscolamasterai.Game.Card;
 import com.gianlu.briscolamasterai.Game.Game;
+import com.gianlu.briscolamasterai.Game.GameUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
@@ -17,20 +19,33 @@ public class PseudoAiPlayer extends BasePlayer {
         super(name);
     }
 
-    private static int assignWeight(Card[] table, boolean winner) {
-        int points = 0;
-        for (Card card : table) points += card.points;
-        return points * (winner ? 1 : -1);
+    @Nullable
+    public static Card findBestPlay(Card trump, Card[] hand, Card firstPlayedCard) {
+        int bestPlayGain = Integer.MIN_VALUE;
+        Card bestPlay = null;
+        for (Card card : hand) {
+            if (card == null) continue;
+
+            Card[] possibleTable = new Card[]{firstPlayedCard, card};
+            boolean winner = GameUtils.evaluateTable(trump, possibleTable) == 1;
+            int possibleGain = GameUtils.calcGain(possibleTable, winner);
+            if (possibleGain > bestPlayGain) {
+                bestPlayGain = possibleGain;
+                bestPlay = card;
+            }
+        }
+
+        return bestPlay;
     }
 
     @Override
-    public @NotNull Card selectCardToPlay(@NotNull Game game) {
-        if (game.table[0] == null) {
+    public @NotNull Card selectCardToPlay(@NotNull Game.PublicInfo info) {
+        if (info.playingFirst()) {
             int lessHarmfulWeight = Integer.MAX_VALUE;
             Card lessHarmful = null;
             for (Card card : hand) {
                 if (card == null) continue;
-                int possibleHarmfulWeight = (card.points + card.value) + (game.trump.suit == card.suit ? ADDITIONAL_VALUE_OF_TRUMP : 0);
+                int possibleHarmfulWeight = (card.points + card.value) + (info.trump.suit == card.suit ? ADDITIONAL_VALUE_OF_TRUMP : 0);
                 if (possibleHarmfulWeight < lessHarmfulWeight) {
                     lessHarmfulWeight = possibleHarmfulWeight;
                     lessHarmful = card;
@@ -40,20 +55,7 @@ public class PseudoAiPlayer extends BasePlayer {
             if (lessHarmful != null) return lessHarmful;
             else return RandomPlayer.randomCard(random, hand);
         } else {
-            int bestPlayWeight = Integer.MIN_VALUE;
-            Card bestPlay = null;
-            for (Card card : hand) {
-                if (card == null) continue;
-
-                Card[] possibleTable = new Card[]{game.table[0], card};
-                boolean winner = Game.evaluateTable(game.trump, possibleTable) == 1;
-                int possibleWeight = assignWeight(possibleTable, winner);
-                if (possibleWeight > bestPlayWeight) {
-                    bestPlayWeight = possibleWeight;
-                    bestPlay = card;
-                }
-            }
-
+            Card bestPlay = findBestPlay(info.trump, hand, info.table[0]);
             if (bestPlay != null) return bestPlay;
             else return RandomPlayer.randomCard(random, hand);
         }

@@ -17,7 +17,7 @@ public class Game {
     private final BasePlayer playerTwo;
     private final Deck deck;
     private final Listener listener;
-    private Player turnOf;
+
 
     public Game(@NotNull BasePlayer playerOne, @NotNull BasePlayer playerTwo, @NotNull Listener listener) {
         this.playerOne = playerOne;
@@ -37,6 +37,7 @@ public class Game {
     }
 
     public void start() {
+        listener.gameStarted(info.trump);
         changeTurnTo(Player.ONE);
     }
 
@@ -46,8 +47,8 @@ public class Game {
     }
 
     private void playCard(@NotNull Player player, @NotNull Card card) {
-        if (turnOf == null) throw new IllegalStateException("Game not started or ended!");
-        if (turnOf != player) throw new IllegalStateException("Not your turn!");
+        if (info.turnOf == null) throw new IllegalStateException("Game not started or ended!");
+        if (info.turnOf != player) throw new IllegalStateException("Not your turn!");
         if (!Utils.contains(getPlayer(player).hand, card))
             throw new IllegalArgumentException(player + " doesn't have that card!");
         Utils.push(info.table, card);
@@ -57,18 +58,20 @@ public class Game {
     }
 
     private void changeTurnTo(@NotNull Game.Player set) {
-        turnOf = set;
-        playCard(turnOf, getPlayer(turnOf).selectCardToPlay(info));
+        info.turnOf = set;
+        listener.turnOf(set);
+        playCard(set, getPlayer(set).selectCardToPlay(info));
     }
 
     private void checkEveryonePlayed() {
         if (Utils.countNotNull(info.table) == info.table.length) {
             Player winner = evaluateTable();
+            listener.playerWonRound(winner);
             Utils.dumpArrayIntoList(info.table, getPlayer(winner).cardsWon);
             Utils.clear(info.tablePlayedBy);
 
             if (deck.isEmpty() && Utils.isEmpty(playerOne.hand) && Utils.isEmpty(playerTwo.hand)) {
-                turnOf = null;
+                info.turnOf = null;
                 evaluateGame();
             } else {
                 handDeal(winner);
@@ -76,7 +79,7 @@ public class Game {
                 changeTurnTo(winner);
             }
         } else {
-            changeTurnTo(opposite(turnOf));
+            changeTurnTo(opposite(info.turnOf));
         }
     }
 
@@ -120,6 +123,7 @@ public class Game {
         public final Card trump;
         public final Card[] table;
         public final Player[] tablePlayedBy;
+        public Player turnOf;
 
         private PublicInfo(Card trump) {
             if (trump == null) throw new IllegalStateException("What the hell?!");

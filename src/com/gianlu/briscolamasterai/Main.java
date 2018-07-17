@@ -3,7 +3,7 @@ package com.gianlu.briscolamasterai;
 import com.gianlu.briscolamasterai.Game.Card;
 import com.gianlu.briscolamasterai.Game.Game;
 import com.gianlu.briscolamasterai.Players.AiPlayer;
-import com.gianlu.briscolamasterai.Players.RandomPlayer;
+import com.gianlu.briscolamasterai.Players.ConsolePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ public class Main implements Game.Listener {
     private final Game game;
 
     private Main() {
-        game = new Game(new RandomPlayer("Random one"), new AiPlayer("AI two"), this);
+        game = new Game(new ConsolePlayer("Random one"), new AiPlayer("AI two"), this);
         game.start();
     }
 

@@ -1,18 +1,20 @@
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+package com.gianlu.briscolamasterai;
+
+import com.gianlu.briscolamasterai.Players.BasePlayer;
+import com.gianlu.briscolamasterai.Players.RandomPlayer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Scanner;
 
 /**
  * @author Gianlu
  */
 public class Main implements Game.Listener {
-    private final Scanner sc = new Scanner(System.in);
     private final Game game;
 
     public Main() {
-        game = new Game(this);
+        game = new Game(new RandomPlayer("Random one"), new RandomPlayer("Random two"), this);
         game.start();
     }
 
@@ -28,28 +30,21 @@ public class Main implements Game.Listener {
     }
 
     @Override
-    public void turnOf(@NotNull Player player) {
+    public void turnOf(@NotNull BasePlayer player) {
         System.out.println("---------------------------");
         System.out.println("Turn of " + player);
         System.out.println("Current table is: " + Arrays.toString(game.table));
-        System.out.print("Index of card to play: ");
-        if (sc.hasNextLine()) {
-            int index = Integer.parseInt(sc.nextLine());
-            game.playCard(player, player.hand[index]);
-        } else {
-            throw new IllegalStateException("You must play a card!!");
-        }
     }
 
     @Override
-    public void playerWonRound(@NotNull Player player) {
+    public void playerWonRound(@NotNull BasePlayer player) {
         System.out.println("---------------------------");
         System.out.println("Round table: " + Arrays.toString(game.table));
         System.out.println("ROUND WINNER: " + player);
     }
 
     @Override
-    public void gameEnded(@Nullable Player winner, int winnerPoints, int otherPoints) {
+    public void gameEnded(@Nullable BasePlayer winner, int winnerPoints, int otherPoints) {
         System.out.println("---------------------------");
         System.out.println("GAME ENDED!!");
         System.out.println("WINNER: " + winner);

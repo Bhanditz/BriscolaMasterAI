@@ -1,4 +1,6 @@
-import com.sun.istack.internal.NotNull;
+package com.gianlu.briscolamasterai;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gianlu

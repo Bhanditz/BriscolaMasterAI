@@ -1,3 +1,5 @@
+package com.gianlu.briscolamasterai;
+
 import java.util.Collection;
 import java.util.Objects;
 

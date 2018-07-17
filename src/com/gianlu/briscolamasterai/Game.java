@@ -1,26 +1,29 @@
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+package com.gianlu.briscolamasterai;
+
+import com.gianlu.briscolamasterai.Players.BasePlayer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Gianlu
  */
 public class Game {
-    public final Player playerOne;
-    public final Player playerTwo;
+    public final BasePlayer playerOne;
+    public final BasePlayer playerTwo;
     public final Deck deck;
     public final Card trump;
     public final Card[] table;
-    public final Player[] tablePlayedBy;
+    public final BasePlayer[] tablePlayedBy;
     private final Listener listener;
-    public Player turnOf;
+    public BasePlayer turnOf;
 
-    public Game(@NotNull Listener listener) {
+    public Game(@NotNull BasePlayer playerOne, @NotNull BasePlayer playerTwo, @NotNull Listener listener) {
+        this.playerOne = playerOne;
+        this.playerTwo = playerTwo;
         this.listener = listener;
         deck = Deck.newDeck();
-        playerOne = new Player("Player one");
-        playerTwo = new Player("Player two");
         table = new Card[2]; // Number of players
-        tablePlayedBy = new Player[2]; // Number of players
+        tablePlayedBy = new BasePlayer[2]; // Number of players
 
         handDeal(playerOne);
         handDeal(playerTwo);
@@ -33,7 +36,7 @@ public class Game {
         changeTurnTo(playerOne);
     }
 
-    public void playCard(@NotNull Player player, @NotNull Card card) {
+    public void playCard(@NotNull BasePlayer player, @NotNull Card card) {
         if (turnOf == null) throw new IllegalStateException("Game not started!");
         if (turnOf != player) throw new IllegalStateException("Not your turn!");
         if (!Utils.contains(player.hand, card)) throw new IllegalArgumentException(player + " doesn't have that card!");
@@ -43,14 +46,16 @@ public class Game {
         checkEveryonePlayed();
     }
 
-    private void changeTurnTo(@NotNull Player player) {
+    private void changeTurnTo(@NotNull BasePlayer player) {
         turnOf = player;
         listener.turnOf(player);
+        playCard(turnOf, turnOf.selectCardToPlay());
     }
 
     private void checkEveryonePlayed() {
         if (Utils.countNotNull(table) == table.length) {
-            Player winner = evaluateTable();
+            BasePlayer winner = evaluateTable();
+            listener.playerWonRound(winner);
             Utils.dumpArrayIntoList(table, winner.cardsWon);
             Utils.clear(tablePlayedBy);
 
@@ -58,7 +63,6 @@ public class Game {
                 turnOf = null;
                 evaluateGame();
             } else {
-                listener.playerWonRound(winner);
                 handDeal(winner);
                 handDeal(winner == playerOne ? playerTwo : playerOne);
                 changeTurnTo(winner);
@@ -71,7 +75,7 @@ public class Game {
     }
 
     @NotNull
-    private Player evaluateTable() {
+    private BasePlayer evaluateTable() {
         Card leading = table[0];
         for (int i = 1; i < table.length; i++) {
             Card current = table[i];
@@ -91,7 +95,7 @@ public class Game {
         return tablePlayedBy[Utils.indexOf(table, leading)];
     }
 
-    public void handDeal(@NotNull Player player) {
+    public void handDeal(@NotNull BasePlayer player) {
         for (int i = 0; i < player.hand.length; i++) {
             Card card = player.hand[i];
             if (card == null) player.hand[i] = deck.poll();
@@ -109,10 +113,10 @@ public class Game {
     public interface Listener {
         void gameStarted(@NotNull Card trump);
 
-        void turnOf(@NotNull Player player);
+        void turnOf(@NotNull BasePlayer player);
 
-        void playerWonRound(@NotNull Player player);
+        void playerWonRound(@NotNull BasePlayer player);
 
-        void gameEnded(@Nullable Player winner, int winnerPoints, int otherPoints);
+        void gameEnded(@Nullable BasePlayer winner, int winnerPoints, int otherPoints);
     }
 }

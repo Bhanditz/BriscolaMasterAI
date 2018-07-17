@@ -10,6 +10,7 @@ import java.util.Random;
  * @author Gianlu
  */
 public class PseudoAiPlayer extends BasePlayer {
+    private static final int ADDITIONAL_VALUE_OF_TRUMP = 8;
     private final Random random = new Random(System.nanoTime());
 
     public PseudoAiPlayer(String name) {
@@ -29,7 +30,7 @@ public class PseudoAiPlayer extends BasePlayer {
             Card lessHarmful = null;
             for (Card card : hand) {
                 if (card == null) continue;
-                int possibleHarmfulWeight = (card.points + card.value) + (game.trump.suit == card.suit ? 8 : 0);
+                int possibleHarmfulWeight = (card.points + card.value) + (game.trump.suit == card.suit ? ADDITIONAL_VALUE_OF_TRUMP : 0);
                 if (possibleHarmfulWeight < lessHarmfulWeight) {
                     lessHarmfulWeight = possibleHarmfulWeight;
                     lessHarmful = card;

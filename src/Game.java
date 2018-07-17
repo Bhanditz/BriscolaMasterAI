@@ -59,8 +59,8 @@ public class Game {
                 evaluateGame();
             } else {
                 listener.playerWonRound(winner);
-                handDeal(playerOne);
-                handDeal(playerTwo);
+                handDeal(winner);
+                handDeal(winner == playerOne ? playerTwo : playerOne);
                 changeTurnTo(winner);
             }
         } else {

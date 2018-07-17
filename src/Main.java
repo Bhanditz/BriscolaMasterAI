@@ -44,6 +44,7 @@ public class Main implements Game.Listener {
     @Override
     public void playerWonRound(@NotNull Player player) {
         System.out.println("---------------------------");
+        System.out.println("Round table: " + Arrays.toString(game.table));
         System.out.println("ROUND WINNER: " + player);
     }
 

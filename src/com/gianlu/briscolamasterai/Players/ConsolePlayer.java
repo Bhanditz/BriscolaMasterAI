@@ -12,8 +12,8 @@ import java.util.Scanner;
 public class ConsolePlayer extends BasePlayer {
     private final Scanner scanner = new Scanner(System.in);
 
-    public ConsolePlayer(String name) {
-        super(name);
+    public ConsolePlayer() {
+        super("Console player");
     }
 
     @Override

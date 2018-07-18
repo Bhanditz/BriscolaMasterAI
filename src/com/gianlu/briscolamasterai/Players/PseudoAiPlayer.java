@@ -15,8 +15,8 @@ public class PseudoAiPlayer extends BasePlayer {
     private static final int ADDITIONAL_VALUE_OF_TRUMP = 8;
     private final Random random = new Random(System.nanoTime());
 
-    public PseudoAiPlayer(String name) {
-        super(name);
+    public PseudoAiPlayer() {
+        super("PseudoAI player");
     }
 
     @Nullable

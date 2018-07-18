@@ -12,8 +12,8 @@ import java.util.Random;
 public class RandomPlayer extends BasePlayer {
     private final Random random = new Random(System.nanoTime());
 
-    public RandomPlayer(String name) {
-        super(name);
+    public RandomPlayer() {
+        super("Random player");
     }
 
     @NotNull

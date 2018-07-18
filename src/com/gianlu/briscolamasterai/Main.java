@@ -16,7 +16,7 @@ public class Main implements Game.Listener {
     private final Game game;
 
     private Main() {
-        game = new Game(new RandomPlayer("Random one"), new MiniMaxPlayer("MM two"), this);
+        game = new Game(new RandomPlayer(), new MiniMaxPlayer(8), this);
         game.start();
     }
 

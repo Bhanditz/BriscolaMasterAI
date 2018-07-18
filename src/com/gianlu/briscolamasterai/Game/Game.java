@@ -46,8 +46,8 @@ public class Game {
     }
 
     @NotNull
-    private Game copy() {
-        return new Game(new BasePlayer.Dummy(playerOne, true), new BasePlayer.Dummy(playerTwo, false), Deck.from(deck), info.trump, Arrays.copyOf(info.table, info.table.length), Arrays.copyOf(info.tablePlayedBy, info.tablePlayedBy.length), info.turnOf);
+    private Game copyForMinimax(Player player) {
+        return new Game(new BasePlayer.Dummy(playerOne, player != Player.ONE), new BasePlayer.Dummy(playerTwo, player != Player.TWO), Deck.from(deck), info.trump, Arrays.copyOf(info.table, info.table.length), Arrays.copyOf(info.tablePlayedBy, info.tablePlayedBy.length), info.turnOf);
     }
 
     public void start() {
@@ -176,8 +176,8 @@ public class Game {
         }
 
         @NotNull
-        public PublicInfo copyWithDummyPlayers() {
-            return Game.this.copy().info;
+        public PublicInfo copyForMinimax(Player player) {
+            return Game.this.copyForMinimax(player).info;
         }
 
         public int getPoints(Player player) {

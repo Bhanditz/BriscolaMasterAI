@@ -15,8 +15,8 @@ import java.util.Random;
 public class AiPlayer extends BasePlayer {
     private final Random random = new Random(System.nanoTime());
 
-    public AiPlayer(String name) {
-        super(name);
+    public AiPlayer() {
+        super("AI player");
     }
 
     @Nullable

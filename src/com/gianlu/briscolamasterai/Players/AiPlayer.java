@@ -7,11 +7,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Queue;
+import java.util.Random;
 
 /**
  * @author Gianlu
  */
 public class AiPlayer extends BasePlayer {
+    private final Random random = new Random(System.nanoTime());
 
     public AiPlayer(String name) {
         super(name);
@@ -41,15 +43,11 @@ public class AiPlayer extends BasePlayer {
     }
 
     @Override
-    public @NotNull Card selectCardToPlay(@NotNull Game.PublicInfo info) {
-        if (info.playingFirst()) {
-            Card bestPlay = findBestPlay(info.trump, hand, info.getUnusedCards());
-            if (bestPlay == null) return hand[0];
-            else return bestPlay;
-        } else {
-            Card bestPlay = PseudoAiPlayer.findBestPlay(info.trump, hand, info.table[0]);
-            if (bestPlay == null) return hand[0];
-            else return bestPlay;
-        }
+    public void yourTurn(@NotNull Game.PublicInfo info) {
+        Card play;
+        if (info.playingFirst()) play = findBestPlay(info.trump, hand, info.getUnusedCards(info.turnOf));
+        else play = PseudoAiPlayer.findBestPlay(info.trump, hand, info.table[0]);
+        if (play == null) play = RandomPlayer.randomCard(random, hand);
+        info.play(play);
     }
 }

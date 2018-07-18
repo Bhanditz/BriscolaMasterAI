@@ -3,7 +3,7 @@ package com.gianlu.briscolamasterai;
 import com.gianlu.briscolamasterai.Game.Card;
 import com.gianlu.briscolamasterai.Game.Game;
 import com.gianlu.briscolamasterai.Players.AiPlayer;
-import com.gianlu.briscolamasterai.Players.PseudoAiPlayer;
+import com.gianlu.briscolamasterai.Players.MiniMaxPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,10 +17,10 @@ public class Benchmark implements Game.Listener {
     private final Map<Game.Player, Integer> result;
 
     private Benchmark(int num) {
-        result = new HashMap<>(2);
+        result = new HashMap<>(3);
 
         for (int i = 0; i < num; i++) {
-            Game game = new Game(new PseudoAiPlayer("AI one"), new AiPlayer("AI two"), this);
+            Game game = new Game(new AiPlayer("AI one"), new MiniMaxPlayer("MM two"), this);
             game.start();
         }
 
@@ -28,7 +28,7 @@ public class Benchmark implements Game.Listener {
     }
 
     public static void main(String[] args) {
-        new Benchmark(1000);
+        new Benchmark(20);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class Benchmark implements Game.Listener {
     }
 
     @Override
-    public void turnOf(@NotNull Game.Player player) {
+    public void turnOf(@NotNull Game.Player player, int round) {
     }
 
     @Override

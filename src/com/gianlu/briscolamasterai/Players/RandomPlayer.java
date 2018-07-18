@@ -31,11 +31,10 @@ public class RandomPlayer extends BasePlayer {
         return hand[availableIndexes[random.nextInt(availableIndexesSize)]];
     }
 
-    @NotNull
     @Override
-    public Card selectCardToPlay(@NotNull Game.PublicInfo info) {
+    public void yourTurn(@NotNull Game.PublicInfo info) {
         Card card = randomCard(random, hand);
         System.out.println("Played " + card);
-        return card;
+        info.play(card);
     }
 }

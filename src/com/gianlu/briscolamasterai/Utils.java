@@ -59,6 +59,12 @@ public final class Utils {
         }
     }
 
+    public static <E> void addNotNullToList(E[] array, Collection<E> list) {
+        for (E anArray : array) {
+            if (anArray != null) list.add(anArray);
+        }
+    }
+
     public static <E> void clear(E[] array) {
         for (int i = 0; i < array.length; i++)
             array[i] = null;

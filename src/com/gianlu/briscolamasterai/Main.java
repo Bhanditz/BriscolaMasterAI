@@ -2,8 +2,8 @@ package com.gianlu.briscolamasterai;
 
 import com.gianlu.briscolamasterai.Game.Card;
 import com.gianlu.briscolamasterai.Game.Game;
-import com.gianlu.briscolamasterai.Players.AiPlayer;
-import com.gianlu.briscolamasterai.Players.ConsolePlayer;
+import com.gianlu.briscolamasterai.Players.MiniMaxPlayer;
+import com.gianlu.briscolamasterai.Players.RandomPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ public class Main implements Game.Listener {
     private final Game game;
 
     private Main() {
-        game = new Game(new ConsolePlayer("Random one"), new AiPlayer("AI two"), this);
+        game = new Game(new RandomPlayer("Random one"), new MiniMaxPlayer("MM two"), this);
         game.start();
     }
 
@@ -32,8 +32,9 @@ public class Main implements Game.Listener {
     }
 
     @Override
-    public void turnOf(@NotNull Game.Player player) {
+    public void turnOf(@NotNull Game.Player player, int round) {
         System.out.println("---------------------------");
+        System.out.println("ROUND " + round);
         System.out.println("Turn of " + player);
         System.out.println("Current table is: " + Arrays.toString(game.info.table));
     }

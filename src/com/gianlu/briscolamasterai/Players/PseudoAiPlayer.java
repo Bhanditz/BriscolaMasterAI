@@ -39,7 +39,8 @@ public class PseudoAiPlayer extends BasePlayer {
     }
 
     @Override
-    public @NotNull Card selectCardToPlay(@NotNull Game.PublicInfo info) {
+    public void yourTurn(@NotNull Game.PublicInfo info) {
+        Card play;
         if (info.playingFirst()) {
             int lessHarmfulWeight = Integer.MAX_VALUE;
             Card lessHarmful = null;
@@ -52,12 +53,12 @@ public class PseudoAiPlayer extends BasePlayer {
                 }
             }
 
-            if (lessHarmful != null) return lessHarmful;
-            else return RandomPlayer.randomCard(random, hand);
+            play = lessHarmful;
         } else {
-            Card bestPlay = findBestPlay(info.trump, hand, info.table[0]);
-            if (bestPlay != null) return bestPlay;
-            else return RandomPlayer.randomCard(random, hand);
+            play = findBestPlay(info.trump, hand, info.table[0]);
         }
+
+        if (play == null) play = RandomPlayer.randomCard(random, hand);
+        info.play(play);
     }
 }

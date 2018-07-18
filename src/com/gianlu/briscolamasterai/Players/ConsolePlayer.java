@@ -1,6 +1,5 @@
 package com.gianlu.briscolamasterai.Players;
 
-import com.gianlu.briscolamasterai.Game.Card;
 import com.gianlu.briscolamasterai.Game.Game;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,13 +17,12 @@ public class ConsolePlayer extends BasePlayer {
     }
 
     @Override
-    @NotNull
-    public Card selectCardToPlay(@NotNull Game.PublicInfo info) {
+    public void yourTurn(@NotNull Game.PublicInfo info) {
         System.out.println("Your hand: " + Arrays.toString(hand));
         System.out.print("Select a card to play: ");
         if (scanner.hasNextLine()) {
             int index = Integer.parseInt(scanner.nextLine());
-            return hand[index];
+            info.play(hand[index]);
         }
 
         throw new IllegalStateException("You must play a card!");
